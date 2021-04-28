@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, flash, request
-from flask_login import current_user, login_user, logout_user
+from flask_login import current_user, login_user, logout_user, login_required
 
 from app import app, db
 from app.forms import LoginForm, AddCandidateForm
@@ -17,15 +17,17 @@ def index():
         return render_template('index.html', candidates=candidates)
 
 
-# @login_required
 @app.route('/admin')
 def admin():
-    # user = flask_login.current_user
+    if not current_user.is_authenticated:
+        return redirect(url_for('index'))
     return render_template('admin.html')
 
 
 @app.route('/admin/add_candidate', methods=['GET', 'POST'])
 def add_candidate():
+    if not current_user.is_authenticated:
+        return redirect(url_for('index'))
     form = AddCandidateForm()
     if form.validate_on_submit():
         name = form.name.data
