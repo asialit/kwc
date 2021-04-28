@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="container">
-        <h1 class="text-center">
+        <h1 class="text-center title">
             Kandydaci
         </h1>
         <div class="row justify-content-center">
@@ -12,8 +12,12 @@
                         <!-- <h3 class="card-title"></h3>-->
                         <form method="post" novalidate>
                             {% for candidate in candidates %}
-                                {{ candidate }}
+                                <input type="radio" name="candidate" id="{{ candidate.id }}" value="{{ candidate.id }}">
+                                <label for="{{ candidate.id }}">{{ candidate.name }} {{ candidate.surname }}</label>
+                                <hr>
                             {% endfor %}
+                            <label for="code">Kod uprawniający do głosowania</label>
+                            <input type="text" id="code" name="code"><br><br>
                             <button type="submit" class="btn btn-primary btn-block">Zagłosuj</button>
                         </form>
                     </div>

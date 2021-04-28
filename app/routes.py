@@ -6,10 +6,15 @@ from app.forms import LoginForm, AddCandidateForm
 from app.models import User, Candidate
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    candidates = Candidate.query.all()
-    return render_template('index.html', candidates=candidates)
+    if request.method == "POST":
+        code = request.form["code"]
+        candidate_id = request.form["candidate"]
+        # code_exists = db.session.query(Vote.id).filter_by(code=code).first() is not None
+    else:
+        candidates = Candidate.query.all()
+        return render_template('index.html', candidates=candidates)
 
 
 # @login_required
