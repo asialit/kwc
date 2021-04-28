@@ -1,9 +1,5 @@
 {% extends 'base.html' %}
 
-{% block header %}
-    <h1>{% block title %}Register{% endblock %}</h1>
-{% endblock %}
-
 {% block content %}
     <div class="container">
         <h1 class="text-center">
@@ -13,9 +9,10 @@
             <div class="col-lg-8 col-md-10 col-sm-12">
                 <div class="card">
                     <div class="card-body">
-                        <h3 class="card-title">Sign up</h3>
+                        <!-- <h3 class="card-title"></h3>-->
                         <form method="post" novalidate>
-                            {% for option in options %}
+                            {% for candidate in candidates %}
+                                {{ candidate }}
                             {% endfor %}
                             <button type="submit" class="btn btn-primary btn-block">Zagłosuj</button>
                         </form>
