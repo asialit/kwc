@@ -1,20 +1,35 @@
-from flask import render_template, redirect, url_for, flash
-from flask_login import current_user, login_user, logout_user, login_required
+from flask import render_template, redirect, url_for, flash, request
+from flask_login import current_user, login_user, logout_user
 
-from app import app
-from app.forms import LoginForm
-from app.models import User
+from app import app, db
+from app.forms import LoginForm, AddCandidateForm
+from app.models import User, Candidate
 
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    candidates = Candidate.query.all()
+    return render_template('index.html', candidates=candidates)
 
 
+# @login_required
 @app.route('/admin')
-@login_required
 def admin():
-    return render_template('index.html')
+    # user = flask_login.current_user
+    return render_template('admin.html')
+
+
+@app.route('/admin/add_candidate', methods=['GET', 'POST'])
+def add_candidate():
+    form = AddCandidateForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        surname = form.surname.data
+        candidate = Candidate(name=name, surname=surname)
+        db.session.add(candidate)
+        db.session.commit()
+        return redirect(url_for('admin'))
+    return render_template('add_candidate.html', form=form)
 
 
 @app.route('/admin/login', methods=['GET', 'POST'])
@@ -29,7 +44,7 @@ def login():
             return redirect(url_for('login'))
         login_user(user)
         return redirect(url_for('index'))
-    return render_template('login.html', title='Sign In', form=form)
+    return render_template('login.html', form=form)
 
 
 @app.route('/admin/logout')

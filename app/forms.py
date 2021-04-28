@@ -7,3 +7,9 @@ class LoginForm(FlaskForm):
     username = StringField('Nazwa użytkownika', validators=[DataRequired()])
     password = PasswordField('Hasło', validators=[DataRequired()])
     submit = SubmitField('Zaloguj się')
+
+
+class AddCandidateForm(FlaskForm):
+    name = StringField('Imię', validators=[DataRequired()])
+    surname = StringField('Nazwisko użytkownika', validators=[DataRequired()])
+    submit = SubmitField('Dodaj')

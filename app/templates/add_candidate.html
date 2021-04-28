@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10 col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">Dodaj kandydata</h3>
+                    <form action="" method="post" novalidate>
+                        {{ form.hidden_tag() }}
+                        <p>
+                            {{ form.name.label }}<br>
+                            {{ form.name(size=32) }}<br>
+                            {% for error in form.name.errors %}
+                                <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                        </p>
+                        <p>
+                            {{ form.surname.label }}<br>
+                            {{ form.surname(size=32) }}<br>
+                            {% for error in form.surname.errors %}
+                                <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                        </p>
+                        <p>{{ form.submit() }}</p>
+                    </form>
+                    </div>
+                    <!--<div class="card-footer text-muted text-center">
+                        Already have an account? <a href="#">Log in</a>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
