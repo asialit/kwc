@@ -29,3 +29,8 @@ class Candidate(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
     surname = db.Column(db.String(64))
+
+
+class Code(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(5))
