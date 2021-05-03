@@ -10,20 +10,25 @@
                 <div class="card">
                     <div class="card-body">
                         <!-- <h3 class="card-title"></h3>-->
-                        <form method="post" novalidate>
-                            {% for candidate in candidates %}
-                                <input type="radio" name="candidate" id="{{ candidate.id }}" value="{{ candidate.id }}">
-                                <label for="{{ candidate.id }}">{{ candidate.name }} {{ candidate.surname }}</label>
-                                <hr>
-                            {% endfor %}
-                            <label for="code">Kod uprawniający do głosowania</label>
-                            <input type="text" id="code" name="code"><br><br>
-                            <button type="submit" class="btn btn-primary btn-block">Zagłosuj</button>
-                        </form>
-                    </div>
-                    <!--<div class="card-footer text-muted text-center">
-                        Already have an account? <a href="#">Log in</a>
-                    </div>-->
+                        {% if publish_results %}
+                            <p>Wyniki głosowania:</p>
+                            <!-- TODO: print results-->
+                        {% elif allow_voting %}
+                            <form method="post" novalidate>
+                                {% for candidate in candidates %}
+                                    <input type="radio" name="candidate" id="{{ candidate.id }}"
+                                           value="{{ candidate.id }}">
+                                    <label for="{{ candidate.id }}">{{ candidate.name }} {{ candidate.surname }}</label>
+                                    <hr>
+                                {% endfor %}
+                                <label for="code">Kod uprawniający do głosowania</label>
+                                <input type="text" id="code" name="code"><br><br>
+                                <button type="submit" class="btn btn-primary btn-block">Zagłosuj</button>
+                            </form>
+                            </div>
+                        {% else %}
+                            <p>Obecnie nie można głosować.</p>
+                        {% endif %}
                 </div>
             </div>
         </div>
