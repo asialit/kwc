@@ -29,8 +29,11 @@ class Candidate(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
     surname = db.Column(db.String(64))
+    number = db.Column(db.String(64))
+    result = db.Column(db.Integer)
 
 
 class Code(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(5))
+    if_used = db.Column(db.Boolean)
