@@ -5,20 +5,27 @@ from flask_login import current_user, login_user, logout_user
 
 from app import app, db
 from app.forms import LoginForm, AddCandidateForm
-from app.models import User, Candidate
+from app.models import User, Candidate, Code
 from config import Config
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    message = None
     if request.method == "POST":
         code = request.form["code"]
         candidate_id = request.form["candidate"]
-        # code_exists = db.session.query(Vote.id).filter_by(code=code).first() is not None
-    else:
-        candidates = Candidate.query.all()
-        return render_template('index.html', candidates=candidates,
-                               publish_results=Config.PUBLISH_RESULTS, allow_voting=Config.ALLOW_VOTING)
+        code = Code.query.filter_by(code=code).first()
+        if code is not None and code.if_used is False:
+            candidate_number = Candidate.query.filter_by(id=candidate_id).first().number
+            subprocess.call(f'./encrypt {candidate_number}')
+            subprocess.call('./sum')
+            message = "Głos został oddany prawidłowo."
+        else:
+            message = "Niepoprawne dane"
+    candidates = Candidate.query.all()
+    return render_template('index.html', candidates=candidates, publish_results=Config.PUBLISH_RESULTS,
+                           allow_voting=Config.ALLOW_VOTING, message=message)
 
 
 @app.route('/admin')
@@ -34,7 +41,7 @@ def start():
         return redirect(url_for('index'))
 
     Config.ALLOW_VOTING = True
-    subprocess.call('./init', shell=True)
+    subprocess.call('./init')
     return redirect(url_for('admin'))
 
 
@@ -43,19 +50,14 @@ def end():
     if not current_user.is_authenticated:
         return redirect(url_for('index'))
 
-    Config.ALLOW_VOTING = False
-    # subprocess.call('./sum', shell=True)
-    return redirect(url_for('admin'))
-
-
-@app.route('/admin/publish')
-def publish():
-    if not current_user.is_authenticated:
-        return redirect(url_for('index'))
-
     Config.PUBLISH_RESULTS = True
-    subprocess.call('./decrypt', shell=True)
-    return redirect(url_for('admin'))
+    output = subprocess.check_output(['./decrypt'])
+    output = output.decode("utf-8").strip()
+    Candidate.query.filter_by(number=1).first().result = int(output[-2:])
+    Candidate.query.filter_by(number=100).first().result = int(output[-4:-2])
+    Candidate.query.filter_by(number=10000).first().result = int(output[0:-4])
+    db.session.commit()
+    return redirect(url_for('index'))
 
 
 @app.route('/admin/add_candidate', methods=['GET', 'POST'])
